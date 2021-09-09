@@ -51,35 +51,37 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    # チェックアウト
-    - uses: actions/checkout@v2
+      # チェックアウト
+      - uses: actions/checkout@v2
 
-    # JDKのセットアップ
-    - name: set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'zulu'
-        java-version: '11'
+      # JDKのセットアップ
+      - name: set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
 
-    # Gradleのキャッシュ復元
-    - uses: actions/cache@v2
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+      # Gradleのキャッシュ復元
+      - name: Build with Gradle
+        run: ./gradlew assembleDebug
+#       - uses: actions/cache@v2
+#         with:
+#           path: ~/.gradle/caches
+#           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+#           restore-keys: |
+#             ${{ runner.os }}-gradle-
 
-    # テスト
-    - name: Test with Gradle
-      run: ./gradlew connectedAndroidTest
+      # テスト
+      - name: Test with Gradle
+        run: ./gradlew connectedAndroidTest --stacktrace
 
-    # テスト結果とコードカバレッジのアップロード
-    - name: Upload test results and code coverage Artifact
-      uses: actions/upload-artifact@v2
-      if: success() || failure()
-      with:
-        name: results
-        path: |
-          **/build/reports/androidTests/connected/**/*
-        if-no-files-found: warn
-        retention-days: 14
+      # テスト結果とコードカバレッジのアップロード
+      - name: Upload test results and code coverage Artifact
+        uses: actions/upload-artifact@v2
+        if: success() || failure()
+        with:
+          name: results
+          path: |
+            **/build/reports/androidTests/connected/**/*
+          if-no-files-found: warn
+          retention-days: 14
