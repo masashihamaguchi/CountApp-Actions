@@ -71,7 +71,7 @@ jobs:
 
     # テスト
     - name: Test with Gradle
-      run: ./gradlew connectedAndroidTest --stacktrace
+      run: ./gradlew connectedAndroidTest
 
     # テスト結果とコードカバレッジのアップロード
     - name: Upload test results and code coverage Artifact
