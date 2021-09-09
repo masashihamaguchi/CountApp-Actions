@@ -62,18 +62,16 @@ jobs:
           java-version: '11'
 
       # Gradleのキャッシュ復元
-      - name: Build with Gradle
-        run: ./gradlew assembleDebug
-#       - uses: actions/cache@v2
-#         with:
-#           path: ~/.gradle/caches
-#           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-#           restore-keys: |
-#             ${{ runner.os }}-gradle-
+      - uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       # テスト
       - name: Test with Gradle
-        run: ./gradlew connectedAndroidTest --stacktrace
+        run: ./gradlew ｔest --stacktrace
 
       # テスト結果とコードカバレッジのアップロード
       - name: Upload test results and code coverage Artifact
@@ -82,6 +80,6 @@ jobs:
         with:
           name: results
           path: |
-            **/build/reports/androidTests/connected/**/*
+            **/build/reports/tests/**/*
           if-no-files-found: warn
           retention-days: 14
