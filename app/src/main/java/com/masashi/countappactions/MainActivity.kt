@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkColor() {
         if (count > 0) {
-            binding.textView.setTextColor(Color.BLUE)
+            binding.textView.setTextColor(Color.GREEN)
         } else if (count < 0) {
             binding.textView.setTextColor(Color.RED)
         } else {
