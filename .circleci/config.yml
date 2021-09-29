@@ -82,7 +82,7 @@ aliases:
         key: *jars_key
     - run: &build_debug_apk
         name: Build debug APK
-        command: ./gradlew assembleDebug
+        command: ./gradlew assembleRelease
 #    - run: &test
 #        name: test
 #        command: ./gradlew test
