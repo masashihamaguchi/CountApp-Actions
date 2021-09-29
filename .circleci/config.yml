@@ -63,7 +63,7 @@ jobs:
       - run: *upload_to_deploy_gate
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build
