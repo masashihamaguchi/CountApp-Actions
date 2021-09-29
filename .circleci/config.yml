@@ -1,6 +1,69 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.3.0
+
+commands:
+  notify_slack:
+    steps:
+      - slack/notify:
+          event: pass
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":tada::tada::tada: *Success!*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project:*\n${CIRCLE_PROJECT_REPONAME}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When:*\n$(TZ=Asia/Tokyo date +'%Y/%m/%d %T')"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Job:*\n${CIRCLE_JOB}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:*\n${CIRCLE_USERNAME}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${CIRCLE_BRANCH}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Tag:*\n${CIRCLE_TAG}"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
+
 aliases:
   android_docker: &android_docker
     docker:
@@ -9,7 +72,7 @@ aliases:
           TZ: Asia/Tokyo
   steps:
     - restore_cache: &restore_cache
-        key: &jars_key jars-{{ checksum "build.gradle.kts" }}-{{ checksum "app/build.gradle.kts" }}
+        key: &jars_key jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
     - run: &download_deps
         name: Download dependencies
         command: ./gradlew androidDependencies
@@ -61,6 +124,7 @@ jobs:
       - save_cache: *save_cache
       - run: *build_debug_apk
       - run: *upload_to_deploy_gate
+      - notify_slack
 
 workflows:
   version: 2.1
