@@ -39,7 +39,8 @@ jobs:
         environment:
           TZ: Asia/Tokyo
     steps:
-      - checkout
+      - checkout:
+          path: ~/electron-example
       - restore_cache: *restore_cache
       - run: *download_deps
       - save_cache: *save_cache
