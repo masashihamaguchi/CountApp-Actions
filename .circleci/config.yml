@@ -5,10 +5,69 @@ orbs:
   slack: circleci/slack@4.3.0
 
 commands:
-  notify_slack:
+  notify_slack_pass:
     steps:
       - slack/notify:
-          event: pass
+        event: pass
+        custom: |
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": ":tada::tada::tada: *Success!*"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Project:*\n${CIRCLE_PROJECT_REPONAME}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*When:*\n$(TZ=Asia/Tokyo date +'%Y/%m/%d %T')"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Job:*\n${CIRCLE_JOB}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Author:*\n${CIRCLE_USERNAME}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Branch:*\n${CIRCLE_BRANCH}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Tag:*\n${CIRCLE_TAG}"
+                  }
+                ]
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Job"
+                    },
+                    "url": "${CIRCLE_BUILD_URL}"
+                  }
+                ]
+              }
+            ]
+          }
+
+    notify_slack_fail:
+      steps:
+        - slack/notify:
+          event: fail
           custom: |
             {
               "blocks": [
@@ -16,7 +75,7 @@ commands:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":tada::tada::tada: *Success!*"
+                    "text": ":japanese_ogre::japanese_ogre::japanese_ogre: *Failed* :bangbang:"
                   }
                 },
                 {
@@ -124,7 +183,8 @@ jobs:
       - save_cache: *save_cache
       - run: *build_debug_apk
       - run: *upload_to_deploy_gate
-      - notify_slack
+      - notify_slack_fail
+      - notify_slack_pass
 
 workflows:
   version: 2.1
