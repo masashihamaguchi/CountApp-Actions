@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             checkColor()
         }
 
+
     }
 
     private fun checkColor() {
