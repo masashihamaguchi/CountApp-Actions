@@ -141,14 +141,14 @@ aliases:
         key: *jars_key
     - run: &build_debug_apk
         name: Build debug APK
-        command: ./gradlew assembleRelease
+        command: ./gradlew assembleDebug
 #    - run: &test
 #        name: test
 #        command: ./gradlew test
     - run: &upload_to_deploy_gate
         name: Upload to DeployGate # Set DG_API_KEY in CircleCI
         command: |
-          APK_PATH=app/build/outputs/apk/release/app-release.apk
+          APK_PATH=app/build/outputs/apk/app-debug-unsigned.apk
           TIME=$(date "+%Y/%m/%d %H:%M")
           COMMIT_HASH=$(git log --format="%H" -n 1 | cut -c 1-8)
           USERNAME=masashihamaguchi
@@ -175,7 +175,10 @@ jobs:
 #      - save_cache: *save_cache
 #      - run: *test
   deploy:
-    <<: *android_docker
+    docker:
+      - image: circleci/android:api-30
+        environment:
+          TZ: Asia/Tokyo
     steps:
       - checkout
       - restore_cache: *restore_cache
