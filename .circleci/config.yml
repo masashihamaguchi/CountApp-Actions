@@ -148,7 +148,7 @@ aliases:
     - run: &upload_to_deploy_gate
         name: Upload to DeployGate # Set DG_API_KEY in CircleCI
         command: |
-          APK_PATH=app/build/outputs/apk/app-debug-unsigned.apk
+          APK_PATH=app/build/outputs/apk/debug/app-debug.apk
           TIME=$(date "+%Y/%m/%d %H:%M")
           COMMIT_HASH=$(git log --format="%H" -n 1 | cut -c 1-8)
           USERNAME=masashihamaguchi
